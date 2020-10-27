@@ -26,11 +26,13 @@ def mod97(_x):
        d-=1
    return mod
 
-# 10^1 mod 97=10, 10^2 mod 97=3, 10^9-1 mod 97 = 34
-# print(mod97(1))
-# print(mod97(99))
-# print(mod97((10**9)-1)) # should be 34
-  
+#print(mod97(1))
+# returns 10^1 mod 97 =10
+#print(mod97(25))
+# returns 10^2 mod 97=3
+#print(mod97((10**9)-1))
+# returns 10^9 mod 97 = 34
+
 # compute 2 check digits
 def check_digits(_t0,_R1):
    dt=digits(_t0)
@@ -117,4 +119,3 @@ t0=201012 # date of infectiousness
 code=44559257531208704 # Code: 4455-9257-5312-0870-4
 x=t0*(10**17)+code
 print(checksum(x), "\n")
-
