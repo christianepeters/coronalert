@@ -1,8 +1,8 @@
 # Coronalert
 
-The [Coronalert][CA] is a privacy-preserving contact tracing app launched in Belgium. The app is based on the [DP-3T protocol][DP3T].
+[Coronalert][CA] is a privacy-preserving contact tracing app launched in Belgium. The app is based on the [DP-3T protocol][DP3T].
 
-Here we provide a [python script](checkcode.py) to see if a test code was generated correctly. The specs are given in the appendix "Computation of the error detection code modulo 97" in the [Coronalert technical specification][CASD]. If you split the test code in chunks of 9 digits you can carry out all computations with 32-bit integers.
+I wrote a simple [python script](checkcode.py) to see if a test code was generated correctly. The specs are given in the appendix "Computation of the error detection code modulo 97" in the [Coronalert technical specification][CASD]. If you split the test code in chunks of 9 digits you can carry out all computations with 32-bit integers.
 
 
 Example test code:
