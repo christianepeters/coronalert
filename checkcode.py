@@ -10,6 +10,7 @@
 import sys
 import random
 
+# get number of digits
 def digits(num):
    count = 0
    while  num > 0:
@@ -17,33 +18,49 @@ def digits(num):
       num //= 10
    return count
 
-# single-precision with all terms less than 10^9 (which is less than 32 bits)
-def check_digits_sp(_t0,_R1):
-   if(digits(_t0)!=6 or digits(_R1)!=15):
-        return("error")
-   else:
-        c1=_t0//10      # leading 5 digits of _t0
-        c1%=97
-        #print(c1)
-        c2=_R1//(10**7)
-        c2+=(_t0%10)*(10**8)
-        c2%=97
-        #print(c2)
-        c3=_R1%(10**7)*100
-        c3%=97
-        #print(c3)
-        c=(89*c1+34*c2+c3)%97
-        #print(c)
-        return c
+# return 10^digits(_x) mod 97
+def mod97(_x):
+   d=digits(_x)-1
+   mod=10
+   while d>0:
+       mod=(mod*10)%97
+       d-=1
+   return mod
 
+#print(mod97(1))
+# returns 10^1 mod 97 =10
+#print(mod97(25))
+# returns 10^2 mod 97=3
+#print(mod97((10**9)-1))
+# returns 10^9 mod 97 = 34
+
+# compute 2 check digits
+def check_digits(_t0,_R1):
+   dt=digits(_t0)
+   if(dt!=6):
+      return 0;
+   c1=_t0//10      # leading 5 digits of _t0
+   #print("c1=",c1)
+   c1%=97
+   c2=_R1//(10**7)
+   c2+=(_t0%10)*(10**8)
+   #print("c2=",c2)
+   m=mod97(c2)   # compute 10^digits(c2) mod 97, split over the resp 9-digit chunks
+   c2%=97
+   c3=_R1%(10**7)*100
+   c3%=97
+   # 10^18 %97=89
+   # m=10^x % 97 where x=digits(c2)
+   c=(89*c1+m*c2+c3)%97
+   return c
+
+# check if _x equals 0 mod 97
 def checksum(_x):
-   if(digits(_x)!=23):
-        return("error")
-   else:
-     print("compute checksum mod 97  of",x)
+     print("Compute",x,"mod 97")
      c1=_x//(10**18)
      #print(c1)
      c2=(_x-(c1*10**18))//(10**9)
+     m=mod97(c2)   # compute 10^digits(c2) mod 97, split over the resp 9-digit chunks
      #print(c2)
      c3=_x-(c1*10**18)-(c2*10**9)
      #print(c3)
@@ -52,26 +69,59 @@ def checksum(_x):
      c1=(c1*89)%97
      c2%=97
      #print(c2)
-     c2=(c2*34)%97
+     c2=(c2*m)%97
      c3%=97
      #print(c3)
      c=(c1+c2+c3)%97
      return c
 
+
+###################################################
+
+print("### Tech specs example ###")
 t0 = 200813                 # 6 digits
 R1 = 123456789012345        # 15 digits
-print("### example test code ###")
-print(t0)
-print(R1)
-x=(t0*(10**digits(R1))+R1)*100+(97-check_digits_sp(t0,R1))
-print(checksum(x))
+c=check_digits(t0,R1)
+print("t0",t0)
+print("R1",R1)
+print("c",97-c)
+x=(t0*(10**15)+R1)*100+(97-c)
+print(checksum(x), "\n")
+
+###################################################
+
+print("### 13-digit R0 and t0 ending on 0 ###")
+t0 = 200920                 # 6 digits with 0 at the end
+R1 = 3456789012345          # 13 digits = 15 digits with two trailing zeros
+c=check_digits(t0,R1)
+print("t0",t0)
+print("R1",R1)
+print("c",97-c)
+x=(t0*(10**15)+R1)*100+(97-c)
+print(checksum(x), "\n")
+
+###################################################
+
+print("### Example test code with bogus date and 1-digit R1 ###")
+t0 = 200000                 # bogus number, not a date
+R1 = 5                      # 1 digit only
+c=check_digits(t0,R1)
+print("t0",t0)
+print("R1",R1)
+print("c",97-c)
+x=(t0*(10**15)+R1)*100+(97-c)
+print(checksum(x), "\n")
+
+###################################################
 
 # another test with test code from the app
-print("### test code generated in the app ###")
+print("### Test code generated in the app ###")
 t0=201012 # date of infectiousness
 code=44559257531208704 # Code: 4455-9257-5312-0870-4
 x=t0*(10**17)+code
 print(checksum(x))
+
+###################################################
 
 # generate bogus code
 t0=random.randint(20,21)*10**4
@@ -80,6 +130,6 @@ t0+=random.randint(1,28)
 R1=random.randint(10**14, 10**15)
 print("somewhat random t0:",t0)
 print("random R1:", R1)
-x=(t0*(10**digits(R1))+R1)*100+(97-check_digits_sp(t0,R1))
+x=(t0*(10**digits(R1))+R1)*100+(97-check_digits(t0,R1))
 print(checksum(x))
 
