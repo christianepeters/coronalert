@@ -8,6 +8,7 @@
 # this code is hosted at https://github.com/christianepeters
 # Date: 27-Oct-2020
 import sys
+import random
 
 def digits(num):
    count = 0
@@ -71,3 +72,14 @@ t0=201012 # date of infectiousness
 code=44559257531208704 # Code: 4455-9257-5312-0870-4
 x=t0*(10**17)+code
 print(checksum(x))
+
+# generate bogus code
+t0=random.randint(20,21)*10**4
+t0+=random.randint(1,12)*10**2
+t0+=random.randint(1,28)
+R1=random.randint(10**14, 10**15)
+print("somewhat random t0:",t0)
+print("random R1:", R1)
+x=(t0*(10**digits(R1))+R1)*100+(97-check_digits_sp(t0,R1))
+print(checksum(x))
+
